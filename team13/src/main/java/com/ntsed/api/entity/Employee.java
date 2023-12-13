@@ -1,5 +1,7 @@
 package com.ntsed.api.entity;
 
+import java.sql.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,18 +14,15 @@ public class Employee {
     private String employeeName;
     private String password;
     private String deptId;
-    private Integer delFlg;
-    private String createDate;
+    private int delFlg;
+    private Date createDate;
     private String createUser;
-    private String updateDate;
+    private Date updateDate;
     private String updateUser;
-    private String gender;
+    private int genderId;
     private String age;
-    private String startDay;
     private String emailAddress;
-    private String phoneNumber;
-    
-    
-    
+    private String iphone;
+    private Date startDay;
 
 }
