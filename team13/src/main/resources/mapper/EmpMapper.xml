@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ntsed.api.mapper.EmpMapper">
+
+<resultMap id="map" type="com.ntsed.api.vo.EmployeeVo" >
+        <id column="EMPLOYEE_ID" property="employeeId"/>
+        <result column="EMPLOYEE_NAME" property="employeeName"/>
+        <result column="PASSWORD" property="password"/>
+        <result column="DEPT_ID" property="deptId"/>
+        <result column="DEPT_NAME" property="deptName"/>
+        <result column="DEL_FLG" property="delFlg"/>
+        <result column="CREATE_DATE" property="createDate"/>
+        <result column="CREATE_USER" property="createUser"/>
+        <result column="UPDATE_DATE" property="updateDate"/>
+        <result column="UPDATE_USER" property="updateUser"/>
+        <result column="GENDER_ID" property="genderId"/>
+        <result column="GENDER_NAME" property="genderName"/>
+        <result column="EMPLOYEE_AGE" property="age"/>
+        <result column="START_DAY" property="startDay"/>
+        <result column="EMAIL_ADDRESS" property="emailAddress"/>
+        <result column="IPHONE" property="iphone"/>
+    </resultMap>
+
+    <select id="queryEmpById" resultMap="map" resultType="com.ntsed.api.vo.EmployeeVo">
+        SELECT
+            e.EMPLOYEE_ID,
+            e.EMPLOYEE_NAME,
+            e.PASSWORD,
+            e.DEPT_ID,
+            d.DEPT_NAME,
+            e.DEL_FLG,
+            e.CREATE_DATE,
+            e.CREATE_USER,
+            e.UPDATE_DATE,
+            e.UPDATE_USER,
+            e.GENDER_ID,
+            g.GENDER_NAME,
+            e.EMPLOYEE_AGE,
+            e.START_DAY,
+            e.EMAIL_ADDRESS,
+            e.IPHONE
+        FROM
+            T_EMPLOYEE e
+            LEFT JOIN M_GENDER g ON e.GENDER_ID = g.GENDER_ID
+            LEFT JOIN M_DEPT d ON e.DEPT_ID = d.DEPT_ID
+        WHERE
+            EMPLOYEE_ID = #{employeeId}
+    </select>
+
+    <select id="queryEmpMaxId" resultType="String">
+        SELECT
+            MAX(EMPLOYEE_ID)
+        FROM
+            T_EMPLOYEE
+    </select>
+
+    <update id="updateEmp" parameterType="map">
+        UPDATE
+        T_EMPLOYEE
+        <set>
+            <if test="employeeName != null and employeeName != ''">
+                EMPLOYEE_NAME = #{employeeName},
+            </if>
+            <if test="startDay != null">
+                START_DAY = #{startDay},
+            </if>
+            <if test="genderId != null">
+                GENDER_ID = #{genderId},
+            </if>
+            <if test="age != null and age != ''">
+                EMPLOYEE_AGE = #{age},
+            </if>
+            <if test="deptId != null and deptId != ''">
+                DEPT_ID = #{deptId},
+            </if>
+            <if test="emailAddress != null">
+                EMAIL_ADDRESS = #{emailAddress},
+            </if>
+            <if test="iphone != null and iphone != ''">
+                IPHONE = #{iphone},
+            </if>
+        </set>
+        where
+        EMPLOYEE_ID = #{employeeId}
+    </update>
+
+    <insert id="insertEmp" parameterType="map">
+        INSERT INTO T_EMPLOYEE (
+        EMPLOYEE_NAME,
+        <if test="startDay != null">
+            START_DAY,
+        </if>
+        <if test="genderId != null">
+            GENDER_ID,
+        </if>
+        <if test="age != null">
+            EMPLOYEE_AGE,
+        </if>
+        <if test="deptId != null">
+            DEPT_ID,
+        </if>
+        <if test="emailAddress != null">
+            EMAIL_ADDRESS ,
+        </if>
+        <if test="iphone != null">
+            IPHONE,
+        </if>
+        EMPLOYEE_ID
+        )
+        values (
+            #{employeeName},
+        <if test="startDay != null">
+             #{startDay},
+        </if>
+        <if test="genderId != null">
+             #{genderId},
+        </if>
+        <if test="age != null">
+             #{age},
+        </if>
+        <if test="deptId != null">
+             #{deptId},
+        </if>
+        <if test="emailAddress != null">
+             #{emailAddress},
+        </if>
+        <if test="iphone != null">
+             #{iphone},
+        </if>
+         #{employeeId}
+        )
+    </insert>
+
+
+</mapper>
