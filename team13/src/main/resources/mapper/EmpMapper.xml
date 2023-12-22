@@ -89,6 +89,7 @@
     <insert id="insertEmp" parameterType="map">
         INSERT INTO T_EMPLOYEE (
         EMPLOYEE_NAME,
+        PASSWORD,
         <if test="startDay != null">
             START_DAY,
         </if>
@@ -111,6 +112,7 @@
         )
         values (
             #{employeeName},
+            #{password},
         <if test="startDay != null">
              #{startDay},
         </if>

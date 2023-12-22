@@ -1,6 +1,8 @@
 package com.ntsed.api.controller;
 
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ntsed.api.base.ResultInfo;
 import com.ntsed.api.service.EmpService;
 import com.ntsed.api.vo.EmployeeVo;
+
+import jakarta.servlet.http.HttpSession;
 
 
 @RestController
@@ -34,13 +38,18 @@ public class EmpController {
 	
 	
 	@RequestMapping("addOrUpdateEmp")
-    public ResultInfo<Void> addOrUpdateEmp(@RequestBody EmployeeVo employeeVo) {
+    public ResultInfo<Void> addOrUpdateEmp(@RequestBody EmployeeVo employeeVo, HttpSession session) {
         Integer result = null;
         String maxId = empService.queryEmpMaxId();
         String maxIdTemp = String.valueOf(Long.parseLong(maxId)+1);
         if (maxIdTemp.equals(employeeVo.getEmployeeId())) {
+        	employeeVo.setPassword("123456");
+        	// employeeVo.setCreateUser(session.getEmployeeName);
+    		employeeVo.setCreateDate(new Date());
         	result = empService.insertEmp(employeeVo);
         } else {
+        	// employeeVo.setUpdateUser(session.getEmployeeName);
+        	employeeVo.setCreateDate(new Date());
         	result = empService.updateEmp(employeeVo);
         }
 

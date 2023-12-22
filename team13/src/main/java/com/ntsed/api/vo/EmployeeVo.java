@@ -1,7 +1,9 @@
 package com.ntsed.api.vo;
 
 
-import java.sql.Date;
+
+
+import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -30,7 +32,7 @@ public class EmployeeVo {
     private String age;
     private String emailAddress;
     private String iphone;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date startDay;
 
 }

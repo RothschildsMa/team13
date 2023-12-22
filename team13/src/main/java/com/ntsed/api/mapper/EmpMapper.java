@@ -13,5 +13,4 @@ public interface EmpMapper {
 	Integer insertEmp(EmployeeVo employeeVo);
 	Integer updateEmp(EmployeeVo employeeVo);
 
-
 }

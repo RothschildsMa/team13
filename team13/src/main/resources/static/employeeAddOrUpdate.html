@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/JavaScript" src="/js/My97DatePicker/WdatePicker.js"></script>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>社員情報登録・更新</title>
+</head>
+<body>
+<center>
+<div>
+    <div >
+
+        <div>
+            <table>
+                <tr>
+                    <td>社员ID&nbsp;：</td>
+                    <td><input type="text" id="employeeId" name="employeeId" value="" style="width:100px;" readonly/>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>入社年月日&nbsp;：</td>
+                    <td>
+                        <input id="startDay" id="startDay" name="startDay" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" />
+
+<!--                        <input type="text" id="startDay" name="startDay" value="" style="width:100px;"/>&nbsp;&nbsp;-->
+                    </td>
+                </tr>
+                <tr>
+                    <td>氏名&nbsp;：</td>
+                    <td><input type="text" id="employeeName" name="employeeName" value="" style="width:100px;"/>&nbsp;&nbsp;&nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td>性别&nbsp;：</td>
+                    <td>
+                        <input type="radio" name="genderId" value="1" checked> 男
+                        <input type="radio" name="genderId" value="0"> 女
+                        <input type="radio" name="genderId" value="9"> 未確認
+<!--                        <input type="text" id="gender" name="gender" value="" style="width:100px;"/>&nbsp;&nbsp;&nbsp;-->
+                    </td>
+                </tr>
+                <tr>
+                    <td>年龄&nbsp;：</td>
+                    <td><input type="text" id="age" name="age" value="" style="width:100px;"/>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>所属&nbsp;：</td>
+                    <td><select id="deptId" name="deptId" style="width:100px;">
+                    				<option value="1">1.営業部</option>
+	  								<option value="2">2.技術部</option>
+	  								<option value="3">3.人事部</option>
+	 								<option value="4">4.カスタマーサービス部</option>
+	 								<option value="5">5.財務部</option>
+	  								<option value="6">6.研究開発部</option>
+                    </select>&nbsp;&nbsp;&nbsp;&nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td>メールアドレス&nbsp;：</td>
+                    <td><input type="text" id="emailAddress" name="emailAddress" value="" style="width:100px;"/>&nbsp;&nbsp;&nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td>電話番号&nbsp;：</td>
+                    <td><input type="text" id="iphone" name="iphone" value="" style="width:100px;"/>&nbsp;&nbsp;&nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button id="add" onclick="addOrUpdateEmp()" id="return save">登録</button>&nbsp;
+                        <button id="update" onclick="addOrUpdateEmp()" id="return update">更新</button>&nbsp;
+                        <button id="backTo" onclick="backTo()">閉じる</button>&nbsp;
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+</center>
+<script type="text/javascript">
+
+
+
+
+    function oneValues() {
+        var result;
+        var url = decodeURI(window.location.search); //获取url中"?"符后的字串
+        if (url.indexOf("?") != -1) {
+            result = url.substr(url.indexOf("=") + 1);
+        }
+        return result;
+    }
+    
+    $(function () {
+        var employeeId = oneValues();
+        queryEmpById(employeeId);
+    })
+    
+    function queryEmpMaxId() {
+        $.ajax({
+            url: "/employee/queryEmpMaxId",
+            type: "get",
+            data: {
+            },
+            success: function (data) {
+                if (data.apiCode == 200) {
+                    $("#employeeId").val(data.result.employeeId);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("系统错误");
+            }
+        });
+    }
+    function queryEmpById(employeeId) {
+        $.ajax({
+            url: "/employee/queryEmpById",
+            type: "get",
+            data: {
+            	employeeId: employeeId
+            },
+            success: function (data) {
+                if (data.apiCode == 200) {
+                    if(data.result == null){
+                        var update = $("#update");
+                        update.hide()
+                        queryEmpMaxId();
+                        return;
+                    }else{
+                        var add = $("#add");
+                        add.hide()
+                    }
+                    $("#employeeId").val(data.result.employeeId);
+                    $("#startDay").val(data.result.startDay);
+                    $("#employeeName").val(data.result.employeeName);
+
+
+
+                    let v = data.result.genderId;
+                    $("input[name='genderId'][value='" + v + "']").prop("checked", true);
+
+
+                    
+                    $("#age").val(data.result.age);
+                    $("#deptId").val(data.result.deptId);
+                    $("#emailAddress").val(data.result.emailAddress);
+                    $("#iphone").val(data.result.iphone);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("系统错误");
+            }
+        });
+    }
+
+
+    function addOrUpdateEmp() {
+        var employeeId = $("#employeeId").val();
+        var startDay = $("#startDay").val();
+        var employeeName = $("#employeeName").val();
+        var genderId = $('input[name=genderId]:checked').val();
+        var age = $("#age").val();
+        var deptId = $("#deptId").val();
+        var emailAddress = $("#emailAddress").val();
+        var iphone = $("#iphone").val();
+        var num = /^([2-5]\d)|65$/;
+        var phone = /^[0-9-]{10,13}$/i;
+        var email = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+
+        if (employeeName == "") {
+            alert("employeeName must is not null");
+            return false;
+        }
+        if (employeeName.length > 100) {
+            alert("employeeName must is > 100 character");
+            return false;
+        }
+        if (!(num.test(age))) {
+            alert("正しい年齢を入力してください");
+            return false;
+        }
+        if(!(phone.test(iphone))){
+        alert("携帯電話番号に誤りがありますので、再度ご記入ください");
+        return false;
+        }
+        if (!(email.test(emailAddress))){
+          alert("有効な電子メール アドレスではありません");
+          return false;
+        }
+
+        $.ajax({
+            url: "/employee/addOrUpdateEmp",
+            type: "post",
+            contentType: "application/json",
+            data: JSON.stringify({
+                employeeId: employeeId,
+                startDay: startDay,
+                employeeName: employeeName,
+                genderId: genderId,
+                age: age,
+                deptId: deptId,
+                emailAddress: emailAddress,
+                iphone: iphone
+            }),
+            success: function (data) {
+                if (data.apiCode == 200) {
+                    alert("保存成功");
+                    window.location.href = 'http://localhost:8080/NewFile.html';
+
+                    return false;
+                } else {
+                    alert("保存失败");
+                    return false;
+                }
+            },
+            error: function (data) {
+                alert("系统错误");
+                return false;
+            }
+        });
+        return false;
+    }
+    
+    function backTo() {
+    	window.location.href = 'http://localhost:8080/NewFile.html';
+    }
+    
+</script>
+
+
+</body>
+</html>
